@@ -3,70 +3,70 @@ package com.example
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
-class PlayerController {
+class TeamController {
 
-    PlayerService playerService
+    TeamService teamService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond playerService.list(params), model:[playerCount: playerService.count()]
+        respond teamService.list(params), model:[teamCount: teamService.count()]
     }
 
     def show(Long id) {
-        respond playerService.get(id)
+        respond teamService.get(id)
     }
 
     def create() {
-        respond new Player(params)
+        respond new Team(params)
     }
 
-    def save(Player player) {
-        if (player == null) {
+    def save(Team team) {
+        if (team == null) {
             notFound()
             return
         }
 
         try {
-            playerService.save(player)
+            teamService.save(team)
         } catch (ValidationException e) {
-            respond player.errors, view:'create'
+            respond team.errors, view:'create'
             return
         }
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'player.label', default: 'Player'), player.id])
-                redirect player
+                flash.message = message(code: 'default.created.message', args: [message(code: 'team.label', default: 'Team'), team.id])
+                redirect team
             }
-            '*' { respond player, [status: CREATED] }
+            '*' { respond team, [status: CREATED] }
         }
     }
 
     def edit(Long id) {
-        respond playerService.get(id)
+        respond teamService.get(id)
     }
 
-    def update(Player player) {
-        if (player == null) {
+    def update(Team team) {
+        if (team == null) {
             notFound()
             return
         }
 
         try {
-            playerService.save(player)
+            teamService.save(team)
         } catch (ValidationException e) {
-            respond player.errors, view:'edit'
+            respond team.errors, view:'edit'
             return
         }
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'player.label', default: 'Player'), player.id])
-                redirect player
+                flash.message = message(code: 'default.updated.message', args: [message(code: 'team.label', default: 'Team'), team.id])
+                redirect team
             }
-            '*'{ respond player, [status: OK] }
+            '*'{ respond team, [status: OK] }
         }
     }
 
@@ -76,11 +76,11 @@ class PlayerController {
             return
         }
 
-        playerService.delete(id)
+        teamService.delete(id)
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'player.label', default: 'Player'), id])
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'team.label', default: 'Team'), id])
                 redirect action:"index", method:"GET"
             }
             '*'{ render status: NO_CONTENT }
@@ -90,7 +90,7 @@ class PlayerController {
     protected void notFound() {
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'player.label', default: 'Player'), params.id])
+                flash.message = message(code: 'default.not.found.message', args: [message(code: 'team.label', default: 'Team'), params.id])
                 redirect action: "index", method: "GET"
             }
             '*'{ render status: NOT_FOUND }
